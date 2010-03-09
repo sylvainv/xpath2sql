@@ -13,6 +13,7 @@ public class XPath2SQL {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		dtdgraph = new DTDGraph("bin/dblp.dtd");
+		System.out.println(dtdgraph);
 	}
 
 }
