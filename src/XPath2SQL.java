@@ -7,6 +7,10 @@ public class XPath2SQL {
 	String regularXpathQuery;
 	static DTDGraph dtdgraph;
 	
+	private void xpath2reg(String query,DTDGraph dtdgraph){
+		
+	}
+	
 	/**
 	 * @param args
 	 */
