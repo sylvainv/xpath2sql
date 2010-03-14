@@ -18,7 +18,7 @@ public class XPath2SQL {
 	static DTDGraph dtdgraph;
 	
 	private void xpath2reg(String query,DTDGraph dtdgraph){
-		
+
 	}
 	
 	/**
