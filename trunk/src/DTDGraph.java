@@ -1,6 +1,7 @@
 import jdsl.core.api.*;
 import jdsl.core.ref.*;
 import jdsl.graph.api.Vertex;
+import jdsl.graph.api.VertexIterator;
 import jdsl.graph.ref.IncidenceListGraph;
 
 import java.io.*;
@@ -15,6 +16,7 @@ public class DTDGraph {
 	
 	private IncidenceListGraph graph;
 	private Vertex root;
+	private Vector<String> elements;
 	
 	DTDGraph(){
 		this.graph = new IncidenceListGraph();
@@ -37,8 +39,16 @@ public class DTDGraph {
 		this.graph.attachVertexFrom(articleElement,"author","");
 		this.graph.attachVertexFrom(articleElement,"title","");
 		this.graph.attachVertexFrom(articleElement,"journal","");
-		this.graph.attachVertexFrom(articleElement,"year","");		
-
+		this.graph.attachVertexFrom(articleElement,"year","");
+		
+		VertexIterator ite = this.graph.vertices();
+		while(ite.hasNext()){
+			this.elements.add(ite.vertex().element().toString());
+		}
+	}
+	
+	public Vector<String> elements(){
+		return this.elements;
 	}
 		
 	@Override
