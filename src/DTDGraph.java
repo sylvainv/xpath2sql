@@ -16,40 +16,48 @@ public class DTDGraph {
 	
 	private IncidenceListGraph graph;
 	private Vertex root;
-	private Vector<String> elements;
+	private HashMap<String,Vertex> elements;
 	
 	DTDGraph(){
+		this.elements = new HashMap<String,Vertex>();
 		this.graph = new IncidenceListGraph();
 		this.root = this.graph.insertVertex("dblp");
 		
 		// Create proceeding element
-		Vertex proceedingElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"proceeding","*"));
-		this.graph.attachVertexFrom(proceedingElement,"booktitle","");
-		this.graph.attachVertexFrom(proceedingElement,"title","");
+		Vertex proceedingElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"proceeding","table"));
+		this.graph.attachVertexFrom(proceedingElement,"booktitle","attribute");
+		this.graph.attachVertexFrom(proceedingElement,"title","attribute");
 		
 		// Create inproceedingElement
-		Vertex inproceedingElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"inproceeding",""));
-		this.graph.attachVertexFrom(inproceedingElement,"author","");
-		this.graph.attachVertexFrom(inproceedingElement,"title","");
-		this.graph.attachVertexFrom(inproceedingElement,"booktitle","");
-		this.graph.attachVertexFrom(inproceedingElement,"year","");
+		Vertex inproceedingElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"inproceeding","table"));
+		this.graph.attachVertexFrom(inproceedingElement,"author","attribute");
+		this.graph.attachVertexFrom(inproceedingElement,"title","attribute");
+		this.graph.attachVertexFrom(inproceedingElement,"booktitle","attribute");
+		this.graph.attachVertexFrom(inproceedingElement,"year","attribute");
 		
 		// Create article element
-		Vertex articleElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"proceeding","*"));
-		this.graph.attachVertexFrom(articleElement,"author","");
-		this.graph.attachVertexFrom(articleElement,"title","");
-		this.graph.attachVertexFrom(articleElement,"journal","");
-		this.graph.attachVertexFrom(articleElement,"year","");
+		Vertex articleElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"proceeding","table"));
+		this.graph.attachVertexFrom(articleElement,"author","attribute");
+		this.graph.attachVertexFrom(articleElement,"title","attribute");
+		this.graph.attachVertexFrom(articleElement,"journal","attribute");
+		this.graph.attachVertexFrom(articleElement,"year","attribute");
 		
 		VertexIterator ite = this.graph.vertices();
 		while(ite.hasNext()){
-			this.elements.add(ite.vertex().element().toString());
+			Vertex v = ite.nextVertex();
+			this.elements.put(v.element().toString(),v);
 		}
+
+	}
+	
+	/*// Return whether node is a table or an attribute
+	public String mapping(String node){
+		return this.graph.anIncidentEdge(this.graph.);
 	}
 	
 	public Vector<String> elements(){
-		return this.elements;
-	}
+		return this.elements.;
+	}*/
 		
 	@Override
 	public String toString() {
