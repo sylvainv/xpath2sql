@@ -3,7 +3,6 @@ import jdsl.core.ref.*;
 import jdsl.graph.api.Vertex;
 import jdsl.graph.ref.IncidenceListGraph;
 
-import com.wutka.dtd.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -17,7 +16,6 @@ public class DTDGraph {
 	private String path;
 	private File file;
 	private Reader dtdreader;
-	private DTDParser parser;
 	private IncidenceListGraph graph;
 	private Vertex root;
 	private HashMap<String,HashMap<String,String>> rec;
@@ -39,47 +37,9 @@ public class DTDGraph {
 		this.graph.attachVertexFrom(journalElement,"j.id","attribute");
 		this.graph.attachVertexFrom(journalElement,"j.name","attribute");
 		
-		/*
-		this.path = path2DTD;
-		this.file = new File(this.path);
-		try{
-			this.dtdreader = new FileReader(file);
-		}
-		catch(FileNotFoundException e){
-			System.out.println("DTD file was not found:"+e);
-		}
-		this.parser = new DTDParser(this.dtdreader);
-		try{
-			dtd = this.parser.parse();
-		}
-		catch(IOException e){
-			System.out.println("IO Exception, no idea what it means, search by yourself.");
-		}
-		Set elements = dtd.elements.keySet();
-		int size = elements.size();
-		System.out.println(size);
-		int i = 0;
-		*/
+
 	}
 		
-	public void precomputeRec(){
-		HashMap<String,String> AJ = new HashMap<String,String>();
-		AJ.put("journal", "article/id*/journal");
-		rec.put("article",AJ);
-		HashMap<String,String> AP = new HashMap<String,String>();
-		AP.put("proceeding", "article/id*/proceeding");
-		rec.put("article",AP);
-	}
-	
-	public void precomputeReach(){
-		HashMap<String,String> AJ = new HashMap<String,String>();
-		AJ.put("journal", "article/id*/journal");
-		recAB.put("article",AJ);
-		HashMap<String,String> AP = new HashMap<String,String>();
-		AP.put("proceeding", "article/id*/proceeding");
-		recAB.put("article",AP);
-	}
-	
 	@Override
 	public String toString() {
 		return this.graph.toString();
