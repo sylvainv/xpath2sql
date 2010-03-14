@@ -13,30 +13,31 @@ import java.util.Vector;
 
 public class DTDGraph {
 	
-	private String path;
-	private File file;
-	private Reader dtdreader;
 	private IncidenceListGraph graph;
 	private Vertex root;
-	private HashMap<String,HashMap<String,String>> rec;
-	private HashMap<String,HashMap<String,String>> reach;
 	
 	DTDGraph(String path2DTD){
 		this.graph = new IncidenceListGraph();
-		this.root = this.graph.insertVertex(new String("article"));
-		this.graph.attachVertexFrom(this.root,"p.author","attribute");
-		this.graph.attachVertexFrom(this.root,"p.title","attribute");
-		Vertex publishID = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"p.id","attribute"));
-		this.graph.attachVertexFrom(this.root,"p.year","attribute");
+		this.root = this.graph.insertVertex("dblp");
 		
-		Vertex conferenceElement = this.graph.opposite(publishID,this.graph.attachVertexFrom(publishID,"proceeding","*"));
-		this.graph.attachVertexFrom(conferenceElement,"c.id","attribute");
-		this.graph.attachVertexFrom(conferenceElement,"c.name","attribute");
+		// Create proceeding element
+		Vertex proceedingElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"proceeding","*"));
+		this.graph.attachVertexFrom(proceedingElement,"booktitle","");
+		this.graph.attachVertexFrom(proceedingElement,"title","");
 		
-		Vertex journalElement = this.graph.opposite(publishID,this.graph.attachVertexFrom(publishID,"journal","*"));
-		this.graph.attachVertexFrom(journalElement,"j.id","attribute");
-		this.graph.attachVertexFrom(journalElement,"j.name","attribute");
+		// Create inproceedingElement
+		Vertex inproceedingElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"inproceeding",""));
+		this.graph.attachVertexFrom(inproceedingElement,"author","");
+		this.graph.attachVertexFrom(inproceedingElement,"title","");
+		this.graph.attachVertexFrom(inproceedingElement,"booktitle","");
+		this.graph.attachVertexFrom(inproceedingElement,"year","");
 		
+		// Create article element
+		Vertex articleElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"proceeding","*"));
+		this.graph.attachVertexFrom(articleElement,"author","");
+		this.graph.attachVertexFrom(articleElement,"title","");
+		this.graph.attachVertexFrom(articleElement,"journal","");
+		this.graph.attachVertexFrom(articleElement,"year","");		
 
 	}
 		
