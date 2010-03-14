@@ -1,4 +1,14 @@
 
+import java.io.*;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Vector;
+import javax.xml.xpath.*;
+import java.sql.*;
+
 public class XPath2SQL {
 
 	String path2DTD;
