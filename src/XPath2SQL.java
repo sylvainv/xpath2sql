@@ -16,7 +16,7 @@ public class XPath2SQL {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		dtdgraph = new DTDGraph("bin/dblp.dtd");
+		dtdgraph = new DTDGraph();
 		System.out.println(dtdgraph);
 	}
 

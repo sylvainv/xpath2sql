@@ -16,7 +16,7 @@ public class DTDGraph {
 	private IncidenceListGraph graph;
 	private Vertex root;
 	
-	DTDGraph(String path2DTD){
+	DTDGraph(){
 		this.graph = new IncidenceListGraph();
 		this.root = this.graph.insertVertex("dblp");
 		
