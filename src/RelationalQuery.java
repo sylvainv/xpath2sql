@@ -69,11 +69,13 @@ public class RelationalQuery {
 		str += " FROM ";
 		Iterator<FromItem> fromIte = this.from.iterator();
 		while(fromIte.hasNext()){str+=fromIte.next().toString()+", ";}
-		
 		str = str.substring(0, str.length()-2);
-		str += " WHERE ";
-		Iterator<WhereItem> whereIte = this.where.iterator();
-		while(whereIte.hasNext()){str+=whereIte.next().toString()+" AND ";}
+		if(!this.where.isEmpty()){
+			
+			str += " WHERE ";
+			Iterator<WhereItem> whereIte = this.where.iterator();
+			while(whereIte.hasNext()){str+=whereIte.next().toString()+" AND ";}
+		}
 		return str;
 	}
 	
