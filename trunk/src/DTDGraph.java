@@ -1,5 +1,6 @@
 import jdsl.core.api.*;
 import jdsl.core.ref.*;
+import jdsl.graph.api.Edge;
 import jdsl.graph.api.EdgeDirection;
 import jdsl.graph.api.Vertex;
 import jdsl.graph.api.VertexIterator;
@@ -56,14 +57,17 @@ public class DTDGraph {
 			Vertex vertex = ite.nextVertex();
 			String key = vertex.element().toString();
 			this.elements.add(vertex.element().toString());
-			String value = this.graph.anIncidentEdge(vertex).element().toString();
-			if(this.mapping.keySet().contains(key)){
-				this.mapping.get(key).add(value);
-			}
-			else{
-				Vector<String> list = new Vector<String>();
-				list.add(value);
-				this.mapping.put(key,list);
+			Edge inEdge = this.graph.anIncidentEdge(vertex,EdgeDirection.IN);
+			if(inEdge!=Edge.NONE){
+				String value = inEdge.element().toString();
+				if(this.mapping.keySet().contains(key)){
+					this.mapping.get(key).add(value);
+				}
+				else{
+					Vector<String> list = new Vector<String>();
+					list.add(value);
+					this.mapping.put(key,list);
+				}
 			}
 		}
 		
