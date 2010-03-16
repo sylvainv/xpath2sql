@@ -27,6 +27,7 @@ public class XPath2SQL {
 	// year//title
 	private static ArrayList<String> xpathParser(String xpathQuery) {
 		String xpathExpr = xpathQuery;
+		System.out.println("Parsing... "+xpathQuery);
 		Pattern slashPattern = Pattern.compile("^/");
 		Matcher slash = slashPattern.matcher(xpathQuery);
 		if(slash.matches()){
@@ -48,15 +49,14 @@ public class XPath2SQL {
 				}
 			}
 		}
+		System.out.println("...Parsed "+subquery);
 		return subquery;
 	}
 	
 	public static RelationalQuery xpath2sql(String xpath, DTDGraph dtdgraph) {
 		RelationalQuery newQuery = new RelationalQuery();
-		System.out.println("Query:"+xpath);
 		ArrayList<String> subqueries = xpathParser(xpath);
 		Iterator<String> iter = subqueries.iterator();
-		System.out.println("Subquery:"+subqueries);
 		while(iter.hasNext()){
 			String subquery = iter.next();
 			Pattern slashPattern = Pattern.compile("([a-z]*|#)/[a-z]*");
