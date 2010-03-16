@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -7,10 +8,9 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.xml.xpath.*;
-
 import java.sql.*;
+import org.modeshape.jcr.xpath.*;
 
 public class XPath2SQL {
 
@@ -19,8 +19,42 @@ public class XPath2SQL {
 	String xpathQuery;
 	String regularXpathQuery;
 	static DTDGraph dtdgraph;
+	ArrayList<String> subquery;
+	
+	private void XPathParser()
+	{
+		String xpathExpr = xpathQuery;
+		xpathExpr="empty"+xpathExpr;
+        String[] element=xpathExpr.split("/");
+        subquery=new ArrayList<String>();
+        for(int i=0; i<element.length;i++)
+        {
+        	System.out.println(element[i]);
+        	if(i+1<element.length)
+        	{
+        		if(!element[i+1].isEmpty())
+        		{
+        			String temp = element[i]+"/"+element[i+1];
+        			subquery.add(temp);
+        		}
+        		else
+        		{
+        			if(i+2<element.length)
+        			{
+        				String temp = element[i]+"//"+element[i+2];
+        				subquery.add(temp);
+        				i++;
+        			}
+        			
+        		}
+        		
+        	}
+        	
+        }
+	}
 	
 	public static RelationalQuery xpath2sql(String xpath,DTDGraph dtdgraph){
+		
 		Pattern slashPattern = Pattern.compile("[a-z]*/[a-z]*");
 		Matcher slash = slashPattern.matcher(xpath);
 		
