@@ -57,27 +57,39 @@ public class RelationalQuery {
 	}
 	
 	public void addSelectItem(SelectItem e){
-		this.select.add(e);
+		if(!this.select.contains(e))
+			this.select.add(e);
 	}
 	
 	public void addSelectItems(Vector<SelectItem> v){
-		this.select.addAll(v);
+		Iterator<SelectItem> iter = v.iterator();
+		while(iter.hasNext()){
+			this.addSelectItem(iter.next());
+		}
 	}
 	
 	public void addFromItem(FromItem e){
-		this.from.add(e);
+		if(!this.from.contains(e)){
+			this.from.add(e); }
 	}
 	
 	public void addFromItems(Vector<FromItem> v){
-		this.from.addAll(v);
+		Iterator<FromItem> iter = v.iterator();
+		while(iter.hasNext()){
+			this.addFromItem( iter.next());
+		}
 	}	
 	
 	public void addWhereItem(WhereItem e){
-		this.where.add(e);
+		if(!this.where.contains(e))
+			this.where.add(e);
 	}
 	
 	public void addWhereItems(Vector<WhereItem> v){
-		this.where.addAll(v);
+		Iterator<WhereItem> iter = v.iterator();
+		while(iter.hasNext()){
+			this.addWhereItem(iter.next());
+		}
 	}	
 
 	public SelectItem getSelectItem(int index) {

@@ -45,14 +45,14 @@ public class DTDGraph {
 		this.graph.attachVertexFrom(inproceedingsElement,"year","attribute=publish.year");
 		
 		// Create article element
-		Vertex articleElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"proceedings","table=publish"));
+		Vertex articleElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"article","table=publish"));
 		this.graph.attachVertexFrom(articleElement,"author","attribute=publish.author");
 		this.graph.attachVertexFrom(articleElement,"title","attribute=publish.title");
 		this.graph.attachVertexFrom(articleElement,"journal","attribute=publish.id");
 		this.graph.attachVertexFrom(articleElement,"year","attribute=publish.year");
 		
 		// Store elements for mapping, map each node value to the edge it is associated to
-		this.mapping.put("dblp",null);
+		this.mapping.put("dblp",new Vector<String>());
 		VertexIterator ite = this.graph.vertices();
 		while(ite.hasNext()){
 			Vertex vertex = ite.nextVertex();
@@ -71,6 +71,7 @@ public class DTDGraph {
 				}
 			}
 		}
+		System.out.println("Mapping:"+this.mapping);
 		// Get all paths from a node A to B (from root to leaves), do that for all nodes
 		paths.put(new Pair<String,String>("proceedings","booktitle"),new String[]{"proceedings/booktitle"});
 		paths.put(new Pair<String,String>("proceedings","title"),new String[]{"proceedings/title"});
