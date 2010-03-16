@@ -19,7 +19,6 @@ public class XPath2SQL {
 	String xpathQuery;
 	String regularXpathQuery;
 	static DTDGraph dtdgraph;
-	ArrayList<String> subquery;
 
 	// this one can give you the subquery list
 	// for instance /DBLP//inproceedings[year=2009]/author/year//title
@@ -29,11 +28,14 @@ public class XPath2SQL {
 	// inproceedings[year=2009]/author
 	// author/year
 	// year//title
-	private void XPathParser() {
+	private static ArrayList<String> xpathParser(String xpathQuery) {
 		String xpathExpr = xpathQuery;
-		xpathExpr = "empty" + xpathExpr;
+		if(xpathQuery.substring(0,1)=="/"){
+			xpathExpr = "#" + xpathExpr;
+		}
+
 		String[] element = xpathExpr.split("/");
-		subquery = new ArrayList<String>();
+		ArrayList<String> subquery = new ArrayList<String>();
 		for (int i = 0; i < element.length; i++) {
 			System.out.println(element[i]);
 			if (i + 1 < element.length) {
@@ -46,13 +48,12 @@ public class XPath2SQL {
 						subquery.add(temp);
 						i++;
 					}
-
 				}
-
 			}
-
 		}
-	}
+		return subquery;
+	}	
+	
 
 	public static RelationalQuery xpath2sql(String xpath, DTDGraph dtdgraph) {
 
