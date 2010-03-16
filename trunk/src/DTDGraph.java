@@ -52,6 +52,7 @@ public class DTDGraph {
 		this.graph.attachVertexFrom(articleElement,"year","attribute=publish.year");
 		
 		// Store elements for mapping, map each node value to the edge it is associated to
+		this.mapping.put("dblp",null);
 		VertexIterator ite = this.graph.vertices();
 		while(ite.hasNext()){
 			Vertex vertex = ite.nextVertex();
@@ -70,7 +71,6 @@ public class DTDGraph {
 				}
 			}
 		}
-		
 		// Get all paths from a node A to B (from root to leaves), do that for all nodes
 		paths.put(new Pair<String,String>("proceedings","booktitle"),new String[]{"proceedings/booktitle"});
 		paths.put(new Pair<String,String>("proceedings","title"),new String[]{"proceedings/title"});
