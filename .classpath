@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/jdsl.jar"/>
+	<classpathentry kind="lib" path="lib/dtdparser121.jar"/>
+	<classpathentry kind="lib" path="lib/modeshape-1.0.0.Final-all-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/modeshape-1.0.0.Final-all-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="lib/modeshape-jcr-1.0.0.Final-tests.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/dtdparser121.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/google-collections-1.0-rc3.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/jakarta-regexp-1.4.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/jcip-annotations-1.0.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/joda-time-1.6.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/lucene-analyzers-3.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/lucene-core-3.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/lucene-regex-3.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/lucene-snowball-3.0.0.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/modeshape-cnd-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/modeshape-common-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/modeshape-graph-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/modeshape-jcr-1.0.0.Final-tests.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/modeshape-repository-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/modeshape-search-lucene-1.0.0.Final.jar"/>
+	<classpathentry kind="lib" path="/home/dknet/workspace/xpath2sql/lib/slf4j-api-1.5.8.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
