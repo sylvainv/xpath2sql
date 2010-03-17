@@ -59,6 +59,7 @@ public class DTDGraph {
 		this.graph.attachVertexFrom(articleElement,"year","attribute=publish.year");
 		
 		// Store children of nodes
+		this.children.put("#",new String[]{"dblp"});
 		this.children.put("dblp",new String[]{"proceedings","inproceedings","article"});
 		this.children.put("proceedings",new String[]{"booktitle","title"});
 		this.children.put("inproceedings",new String[]{"author","title","booktitle","year"});
@@ -100,26 +101,70 @@ public class DTDGraph {
 		// Get all paths from a node A to B (from root to leaves), do that for all nodes
 		paths.put(new Pair<String,String>("proceedings","booktitle"),new String[]{"proceedings/booktitle"});
 		paths.put(new Pair<String,String>("proceedings","title"),new String[]{"proceedings/title"});
+		paths.put(new Pair<String,String>("proceedings","*"),new String[]{"proceedings/title","proceedings/booktitle"});
 		
 		paths.put(new Pair<String,String>("inproceedings","author"),new String[]{"inproceedings/author"});
 		paths.put(new Pair<String,String>("inproceedings","booktitle"),new String[]{"inproceedings/booktitle"});
 		paths.put(new Pair<String,String>("inproceedings","year"),new String[]{"inproceedings/year"});
 		paths.put(new Pair<String,String>("inproceedings","title"),new String[]{"inproceedings/title"});
+		paths.put(new Pair<String,String>("inproceedings","*"),new String[]{"inproceedings/author","inproceedings/booktitle","inproceedings/title","inproceedings/year",});
 		
 		paths.put(new Pair<String,String>("article","author"),new String[]{"article/author"});
 		paths.put(new Pair<String,String>("article","journal"),new String[]{"article/journal"});
 		paths.put(new Pair<String,String>("article","year"),new String[]{"article/year"});
 		paths.put(new Pair<String,String>("article","title"),new String[]{"article/title"});
+		paths.put(new Pair<String,String>("article","*"),new String[]{"article/title","article/year","article/journal","article/author"});
 		
 		paths.put(new Pair<String,String>("dblp","proceedings"),new String[]{"dblp/proceedings"});
 		paths.put(new Pair<String,String>("dblp","inproceedings"),new String[]{"dblp/inproceedings"});
 		paths.put(new Pair<String,String>("dblp","article"),new String[]{"dblp/article"});
+		paths.put(new Pair<String,String>("dblp","*"),new String[]{
+			"dblp/article",
+			"dblp/proceedings",
+			"dblp/inproceedings",
+			"dblp/article/author",
+			"dblp/article/title",
+			"dblp/article/journal",
+			"dblp/article/year",
+			"dblp/inproceedings/author",
+			"dblp/inproceedings/title",
+			"dblp/inproceedings/booktitle",
+			"dblp/inproceedings/year",
+			"dblp/proceeding/booktitle",
+			"dblp/proceeding/title"
+			});
 		
 		paths.put(new Pair<String,String>("dblp","author"),new String[]{"dblp/inproceedings/author","dblp/article/author"});
 		paths.put(new Pair<String,String>("dblp","title"),new String[]{"dblp/proceedings/title","dblp/inproceedings/title","dblp/article/title"});
 		paths.put(new Pair<String,String>("dblp","booktitle"),new String[]{"dblp/proceedings/booktitle","dblp/inproceedings/author"});
 		paths.put(new Pair<String,String>("dblp","year"),new String[]{"dblp/inproceedings/author","dblp/article/author"});
 		paths.put(new Pair<String,String>("dblp","journal"),new String[]{"dblp/article/journal"});
+
+		paths.put(new Pair<String,String>("#","proceedings"),new String[]{"/dblp/proceedings"});
+		paths.put(new Pair<String,String>("#","inproceedings"),new String[]{"/dblp/inproceedings"});
+		paths.put(new Pair<String,String>("#","article"),new String[]{"/dblp/article"});
+		paths.put(new Pair<String,String>("#","author"),new String[]{"/dblp/inproceedings/author","/dblp/article/author"});
+		paths.put(new Pair<String,String>("#","title"),new String[]{"/dblp/proceedings/title","/dblp/inproceedings/title","/dblp/article/title"});
+		paths.put(new Pair<String,String>("#","booktitle"),new String[]{"/dblp/proceedings/booktitle","/dblp/inproceedings/author"});
+		paths.put(new Pair<String,String>("#","year"),new String[]{"/dblp/inproceedings/author","/dblp/article/author"});
+		paths.put(new Pair<String,String>("#","journal"),new String[]{"/dblp/article/journal"});
+		
+		paths.put(new Pair<String,String>("#","*"),new String[]{
+			"/dblp",
+			"/dblp/article",
+			"/dblp/proceedings",
+			"/dblp/inproceedings",
+			"/dblp/proceedings/booktitle",
+			"/dblp/proceedings/title",
+			"/dblp/proceedings/booktitle",
+			"/dblp/inproceedings/title",
+			"/dblp/inproceedings/booktitle",
+			"/dblp/inproceedings/author",
+			"/dblp/inproceedings/year",
+			"/dblp/article/title",
+			"/dblp/article/journal",
+			"/dblp/article/author",
+			"/dblp/article/year"});
 	}
 	
 	// Get all paths from A to B
