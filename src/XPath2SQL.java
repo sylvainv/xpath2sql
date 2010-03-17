@@ -150,7 +150,8 @@ public class XPath2SQL {
 		// TODO Auto-generated method stub
 		dtdgraph = new DTDGraph();
 		// System.out.println(dtdgraph);
-		RelationalQuery query = xpath2sql("/dblp/proceedings/booktitle", dtdgraph);
+		RelationalQuery query = xpath2sql("/dblp/proceedings[/dblp/proceedings/booktitle='toto']", dtdgraph);
+		query.cleanUp();
 		System.out.println(query);
 	}
 

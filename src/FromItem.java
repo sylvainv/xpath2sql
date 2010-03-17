@@ -1,27 +1,22 @@
 
-public class FromItem {
+public class FromItem{
 
 	private String label;
-	private JoinItem join;
 	
 	public FromItem(String label){
 		this.label = label;
 	}
-	
-	public FromItem(JoinItem join){
-		this.join = join;
-	}
-	
+
 	public String toString(){
-		return (this.label=="")?this.join.toString():this.label;
+		return this.label;
 	}
 
 	public String getLabel() {
-		return label;
+		return this.label;
 	}
 
-	public JoinItem getJoin() {
-		return join;
+	@Override
+	public boolean equals(Object item) {
+		return this.label.equals(((FromItem)item).getLabel());
 	}
-	
 }

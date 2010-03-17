@@ -101,19 +101,6 @@ public class DTDGraph {
 	public String[] getPath(String a,String b){
 		return this.paths.get(new Pair<String,String>(a,b));
 	}
-
-	/*
-	private void breadthFirstSearch(Vertex startNode){
-		// Get all outgoing node from starting node
-		VertexIterator vite = this.graph.adjacentVertices(startNode, EdgeDirection.OUT);
-		while(vite.hasNext()){
-			HashMap<String,LinkedList<String>> entry = new HashMap<String,LinkedList<String>>();
-			LinkedList<String> path = new LinkedList<String>();
-			path.add();
-			entry.put(vite.nextVertex().element().toString(),path);
-			this.paths.put(startNode.element().toString(),);
-		}
-	}*/
 	
 	// Return the mapping name or names in the table
 	public Vector<String> mapping(String node){
