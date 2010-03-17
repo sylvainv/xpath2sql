@@ -70,7 +70,8 @@ public class RelationalQuery {
 	
 	public void addFromItem(FromItem e){
 		if(!this.from.contains(e)){
-			this.from.add(e); }
+			this.from.add(e);
+		}
 	}
 	
 	public void addFromItems(Vector<FromItem> v){
@@ -78,7 +79,7 @@ public class RelationalQuery {
 		while(iter.hasNext()){
 			this.addFromItem( iter.next());
 		}
-	}	
+	}
 	
 	public void addWhereItem(WhereItem e){
 		if(!this.where.contains(e))
@@ -114,5 +115,21 @@ public class RelationalQuery {
 
 	public Vector<WhereItem> getWhere() {
 		return where;
+	}
+	
+	public void cleanUp(){
+		Iterator<SelectItem> selectIter = this.select.iterator();
+		Vector<String> toBeRemoved = new Vector<String>();
+		while(selectIter.hasNext()){
+			SelectItem select = selectIter.next();
+			String[] split = select.getLabel().split("\\.");
+			if(!this.from.contains(new FromItem(split[0]))){
+				toBeRemoved.add(split[0]+"."+split[1]);
+			}
+		}
+		Iterator<String> iter = toBeRemoved.iterator();
+		while(iter.hasNext()){
+			this.select.removeElement(new SelectItem(iter.next()));
+		}
 	}
 }
