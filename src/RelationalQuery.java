@@ -1,4 +1,3 @@
-import java.util.Iterator;
 import java.util.Vector;
 
 import jdsl.core.ref.ToString;
@@ -18,80 +17,61 @@ public class RelationalQuery {
 	
 	public static RelationalQuery merge(RelationalQuery query1, RelationalQuery query2){
 		RelationalQuery newQuery = new RelationalQuery();
-		newQuery.addSelectItems(query1.getSelect());
-		newQuery.addSelectItems(query2.getSelect());
-		newQuery.addFromItems(query1.getFrom());
-		newQuery.addFromItems(query2.getFrom());
+		Vector<SelectItem> select1 = query1.getSelect();
+		Vector<SelectItem> select2 = query2.getSelect();
+		Vector<FromItem> from1 = query1.getFrom();
+		Vector<FromItem> from2 = query2.getFrom();
+		
+		int sizeSelect1 = select1.size();
+		int sizeSelect2 = select2.size();
+		int sizeFrom1 = from1.size();
+		int sizeFrom2 = from2.size();
+
+		if(!from1.isEmpty()){
+			for(int i=0;i<sizeSelect1;i++){
+				newQuery.addSelectItem(
+						(SelectItem) (select1.get(i).isSubQuery()?
+								select1.get(i).getQuery():
+								new SelectItem(from1.get(0).getLabel())));
+			}
+		}
+		if(!from2.isEmpty()){
+			for(int i=0;i<sizeSelect2;i++){
+				newQuery.addSelectItem(
+						(SelectItem) (select2.get(i).isSubQuery()?
+								select2.get(i).getQuery():
+								new SelectItem(from2.get(0).getLabel())));
+			}
+		}
+		newQuery.addFromItems(from1);
+		newQuery.addFromItems(from2);
 		newQuery.addWhereItems(query1.getWhere());
 		newQuery.addWhereItems(query2.getWhere());
-		return newQuery;
+		return new RelationalQuery();
 	}
 	
-	public void merge(RelationalQuery query){
-		this.addSelectItems(query.getSelect());
-		this.addFromItems(query.getFrom());
-		this.addWhereItems(query.getWhere());
-	}	
-	
 	public String toString(){
-		String str = "SELECT ";
-		if(!this.select.isEmpty()){
-			Iterator<SelectItem> selectIte = this.select.iterator();
-			while(selectIte.hasNext()){str+=selectIte.next().toString()+", ";}
-			str = str.substring(0, str.length()-2);
-		}
-		else{
-			str += "*";
-		}
-		str += " FROM ";
-		Iterator<FromItem> fromIte = this.from.iterator();
-		while(fromIte.hasNext()){str+=fromIte.next().toString()+", ";}
-		str = str.substring(0, str.length()-2);
-		if(!this.where.isEmpty()){
-			
-			str += " WHERE ";
-			Iterator<WhereItem> whereIte = this.where.iterator();
-			while(whereIte.hasNext()){str+=whereIte.next().toString()+" AND ";}
-			str = str.substring(0, str.length()-4);
-		}
-		return str;
+		return "";
 	}
 	
 	public void addSelectItem(SelectItem e){
-		if(!this.select.contains(e))
-			this.select.add(e);
-	}
-	
-	public void addSelectItems(Vector<SelectItem> v){
-		Iterator<SelectItem> iter = v.iterator();
-		while(iter.hasNext()){
-			this.addSelectItem(iter.next());
-		}
+		this.select.add(e);
 	}
 	
 	public void addFromItem(FromItem e){
-		if(!this.from.contains(e)){
-			this.from.add(e);
-		}
+		this.from.add(e);
 	}
 	
 	public void addFromItems(Vector<FromItem> v){
-		Iterator<FromItem> iter = v.iterator();
-		while(iter.hasNext()){
-			this.addFromItem( iter.next());
-		}
-	}
+		this.from.addAll(v);
+	}	
 	
 	public void addWhereItem(WhereItem e){
-		if(!this.where.contains(e))
-			this.where.add(e);
+		this.where.add(e);
 	}
 	
 	public void addWhereItems(Vector<WhereItem> v){
-		Iterator<WhereItem> iter = v.iterator();
-		while(iter.hasNext()){
-			this.addWhereItem(iter.next());
-		}
+		this.where.addAll(v);
 	}	
 
 	public SelectItem getSelectItem(int index) {
@@ -116,21 +96,5 @@ public class RelationalQuery {
 
 	public Vector<WhereItem> getWhere() {
 		return where;
-	}
-	
-	public void cleanUp(){
-		Iterator<SelectItem> selectIter = this.select.iterator();
-		Vector<String> toBeRemoved = new Vector<String>();
-		while(selectIter.hasNext()){
-			SelectItem select = selectIter.next();
-			String[] split = select.getLabel().split("\\.");
-			if(!this.from.contains(new FromItem(split[0]))){
-				toBeRemoved.add(split[0]+"."+split[1]);
-			}
-		}
-		Iterator<String> iter = toBeRemoved.iterator();
-		while(iter.hasNext()){
-			this.select.removeElement(new SelectItem(iter.next()));
-		}
 	}
 }
