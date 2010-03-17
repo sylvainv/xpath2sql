@@ -65,23 +65,24 @@ public class XPath2SQL {
 					element[i + 1] = element[i + 1].replace('?', '/');
 					String temp = element[i] + "/" + element[i + 1];
 					subquery.add(temp);
+					if(element[i + 1].endsWith("]"))
+					{
+						subquery.add(element[i+1]);
+					}
+					
 				} else {
 					if (i + 2 < element.length) {
 						element[i] = element[i].replace('?', '/');
 						element[i + 2] = element[i + 2].replace('?', '/');
 						String temp = element[i] + "//" + element[i + 2];
 						subquery.add(temp);
+						if(element[i + 2].endsWith("]"))
+						{
+							subquery.add(element[i+2]);
+						}
 						i++;
 					}
 				}
-			}
-		}
-		//draw predicate from the element which contains a predicate that is after /
-		for (int i = 0; i < subquery.size(); i++) {
-			if (subquery.get(i).endsWith("]")) {
-				String temp = subquery.get(i).substring(subquery.get(i).indexOf("["));
-				subquery.add(i+1, temp);
-				i++;
 			}
 		}
 		System.out.println("...Parsed: "+subquery);
