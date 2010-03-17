@@ -90,9 +90,10 @@ public class XPath2SQL {
 	
 	public static RelationalQuery xpath2sql(String xpath, DTDGraph dtdgraph) {
 		RelationalQuery newQuery = new RelationalQuery();
-		Pattern pattern = Pattern.compile("(([a-z]*)|#)");
+		Pattern pattern = Pattern.compile("(([a-z*]*)|#)");
 		Matcher matcher = pattern.matcher(xpath);
 		ArrayList<String> subqueries;
+		int level = 0;
 		if(!matcher.matches()){
 			subqueries = xpathParser(xpath);
 		}
@@ -103,17 +104,21 @@ public class XPath2SQL {
 		Iterator<String> iter = subqueries.iterator();
 		while(iter.hasNext()){
 			String subquery = iter.next();
-			Pattern slashPattern = Pattern.compile("(([a-z]*)|#)/[a-z]*");
+			System.out.println("Current subquery: "+subquery+";");
+			Pattern slashPattern = Pattern.compile("(([a-z*]*)|#)/[a-z*]*(\\[(/[a-z]+)+='[a-z]+'\\]){0,1}");
 			Matcher slash = slashPattern.matcher(subquery);
+			
+			Pattern starPattern = Pattern.compile("\\*");
+			Matcher star = starPattern.matcher(subquery);
+			
+			Pattern doubleSlashPattern = Pattern.compile("(([a-z*]*)|#)//[a-z*]*(\\[(/[a-z]+)+='[a-z]+'\\]){0,1}");
+			Matcher doubleSlash = doubleSlashPattern.matcher(subquery);
 
 			Pattern elementPattern = Pattern.compile("[a-z]*");
 			Matcher element = elementPattern.matcher(subquery);
 			
 			Pattern predicatePattern = Pattern.compile("\\[(/[a-z]+)+='[a-z]+'\\]");
 			Matcher predicate = predicatePattern.matcher(subquery);
-					
-			Pattern slashAndPredicatePattern = Pattern.compile("(([a-z]*)|#)/[a-z]*\\[(/[a-z]+)+='[a-z]+'\\]");
-			Matcher slashAndPredicate = slashAndPredicatePattern.matcher(subquery);
 			
 			// Case A
 			if (element.matches() & dtdgraph.isInGraph(subquery)) {
@@ -132,11 +137,15 @@ public class XPath2SQL {
 					}
 				}
 			}
+			else if (star.matches()){
+				System.out.println("Case A: *");
+				
+			}
 			else if (subquery=="#"){
 				System.out.println("Empty element... do nothing");
 			}
 			// Case p1/p2
-			else if (slash.matches() | slashAndPredicate.matches()) {
+			else if (slash.matches() ) {
 				String[] psplit = subquery.split("\\[");
 				String[] qsplit = psplit[0].split("/");
 				String q1 = qsplit[0];
@@ -144,7 +153,7 @@ public class XPath2SQL {
 				System.out.println("Case p1/p2: " + q1 + "/" + q2);
 				RelationalQuery r1 = xpath2sql(q1, dtdgraph);
 				RelationalQuery r2 = xpath2sql(q2, dtdgraph);
-				newQuery = RelationalQuery.merge(newQuery, RelationalQuery.merge(r1, r2));
+				newQuery.merge(RelationalQuery.merge(r1, r2));
 			}
 			// Case [q=c]
 			else if (predicate.matches()){
@@ -160,6 +169,20 @@ public class XPath2SQL {
 				subRelationalQuery.cleanUp();
 				newQuery.addWhereItem(new WhereItem(subRelationalQuery,"=",right));
 			}
+			else if (doubleSlash.matches()){
+				String[] psplit = subquery.split("\\[");
+				String[] qsplit = psplit[0].split("/");
+				String q1 = qsplit[0];
+				String q2 = qsplit[2];
+				System.out.println("Case p1//p2: " + q1 + "/" + q2);
+				String[] paths = dtdgraph.getPath(q1,q2);
+				for(int i=0;i<paths.length;i++){
+					System.out.println("Path from p1 to p2: "+paths[i]);
+					RelationalQuery r = xpath2sql(paths[i], dtdgraph);
+					newQuery.merge(r);
+				}
+			}
+			level++;
 		}
 		return newQuery;
 	}
@@ -181,10 +204,8 @@ public class XPath2SQL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		dtdgraph = new DTDGraph();
-		// System.out.println(dtdgraph);
-		RelationalQuery query = xpath2sql("/dblp/proceedings[/dblp/proceedings/booktitle='toto']", dtdgraph);
+		RelationalQuery query = xpath2sql("/dblp/*/author[/dblp/proceedings/booktitle='toto']", dtdgraph);
 		query.cleanUp();
 		System.out.println(query);
 	}

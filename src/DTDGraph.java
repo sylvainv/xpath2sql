@@ -24,6 +24,8 @@ public class DTDGraph {
 	private HashSet<String> elements;
 	private HashMap<String,Vector<String>> mapping;
 	private HashMap<Pair<String,String>,String[]> paths;
+	private HashMap<String,String[]> children;
+	private Vector<Vector<String>> levels;
 	
 	DTDGraph(){
 		this.elements = new HashSet<String>();
@@ -31,6 +33,11 @@ public class DTDGraph {
 		this.paths = new HashMap<Pair<String,String>,String[]>();
 		this.graph = new IncidenceListGraph();
 		this.root = this.graph.insertVertex("dblp");
+		this.children = new HashMap<String, String[]>();
+		this.levels = new Vector<Vector<String>>();
+		this.levels.add(new Vector<String>());
+		this.levels.add(new Vector<String>());
+		this.levels.add(new Vector<String>());
 		
 		// Create proceedings element
 		Vertex proceedingsElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"proceedings","table=conference"));
@@ -50,6 +57,24 @@ public class DTDGraph {
 		this.graph.attachVertexFrom(articleElement,"title","attribute=publish.title");
 		this.graph.attachVertexFrom(articleElement,"journal","attribute=publish.id");
 		this.graph.attachVertexFrom(articleElement,"year","attribute=publish.year");
+		
+		// Store children of nodes
+		this.children.put("dblp",new String[]{"proceedings","inproceedings","article"});
+		this.children.put("proceedings",new String[]{"booktitle","title"});
+		this.children.put("inproceedings",new String[]{"author","title","booktitle","year"});
+		this.children.put("article",new String[]{"author","title","journal"});
+		
+		// Store node at a level
+		this.levels.get(0).add("dblp");
+		this.levels.get(1).add("proceedings");
+		this.levels.get(1).add("inproceedings");
+		this.levels.get(1).add("article");
+		
+		this.levels.get(2).add("booktitle");
+		this.levels.get(2).add("title");
+		this.levels.get(2).add("journal");
+		this.levels.get(2).add("year");
+		this.levels.get(2).add("author");
 		
 		// Store elements for mapping, map each node value to the edge it is associated to
 		this.mapping.put("dblp",new Vector<String>());
@@ -100,6 +125,10 @@ public class DTDGraph {
 	// Get all paths from A to B
 	public String[] getPath(String a,String b){
 		return this.paths.get(new Pair<String,String>(a,b));
+	}
+	
+	public String[] getChildren(String node){
+		return this.children.get(node);
 	}
 	
 	// Return the mapping name or names in the table
