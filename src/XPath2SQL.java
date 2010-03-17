@@ -92,32 +92,41 @@ public class XPath2SQL {
 		RelationalQuery newQuery = new RelationalQuery();
 		Pattern pattern = Pattern.compile("(([a-z*]*)|#)");
 		Matcher matcher = pattern.matcher(xpath);
+		
+		// REGEX PATTERN
+		String predicateRegex = "\\[(/([a-z]+|[*]))+='[a-z0-9]+'\\]";
+		String elementEmptyRegex = "([a-z]*|#|[*])";
+		String elementRegex = "([a-z]*|[*])";
+		String emptyRegex = "#";
+		
+		// COMPILE PATTERN
+		Pattern slashPattern = Pattern.compile(elementEmptyRegex+"("+predicateRegex+"){0,1}/"+elementRegex+"("+predicateRegex+"){0,1}");
+		Pattern starPattern = Pattern.compile(elementEmptyRegex+"("+predicateRegex+"){0,1}"+"/[*]"+"("+predicateRegex+"){0,1}");
+		Pattern doubleSlashPattern = Pattern.compile(elementEmptyRegex+"("+predicateRegex+"){0,1}//"+elementRegex+"("+predicateRegex+"){0,1}");
+		Pattern elementPattern = Pattern.compile("[a-z]*");
+		Pattern emptyPattern = Pattern.compile(emptyRegex);
+		Pattern predicatePattern = Pattern.compile(predicateRegex);
+		
+		Matcher t = predicatePattern.matcher(xpath);	
 		ArrayList<String> subqueries;
-		int level = 0;
-		if(!matcher.matches()){
-			subqueries = xpathParser(xpath);
-		}
-		else{
+		if(matcher.matches() | t.matches()){
 			subqueries = new ArrayList<String>();
 			subqueries.add(xpath);
+		}
+		else{
+			subqueries = xpathParser(xpath);
 		}
 		Iterator<String> iter = subqueries.iterator();
 		while(iter.hasNext()){
 			String subquery = iter.next();
 			System.out.println("Current subquery: "+subquery+";");
-			Pattern slashPattern = Pattern.compile("(([a-z*]*)|#)/[a-z*]*(\\[(/[a-z]+)+='[a-z]+'\\]){0,1}");
+			
+			// MATCH PATTERN
 			Matcher slash = slashPattern.matcher(subquery);
-			
-			Pattern starPattern = Pattern.compile("\\*");
 			Matcher star = starPattern.matcher(subquery);
-			
-			Pattern doubleSlashPattern = Pattern.compile("(([a-z*]*)|#)//[a-z*]*(\\[(/[a-z]+)+='[a-z]+'\\]){0,1}");
 			Matcher doubleSlash = doubleSlashPattern.matcher(subquery);
-
-			Pattern elementPattern = Pattern.compile("[a-z]*");
 			Matcher element = elementPattern.matcher(subquery);
-			
-			Pattern predicatePattern = Pattern.compile("\\[(/[a-z]+)+='[a-z]+'\\]");
+			Matcher empty = emptyPattern.matcher(subquery);
 			Matcher predicate = predicatePattern.matcher(subquery);
 			
 			// Case A
@@ -138,18 +147,43 @@ public class XPath2SQL {
 				}
 			}
 			else if (star.matches()){
-				System.out.println("Case A: *");
+				System.out.println("Case *: A/*");
+				String[] qsplit = subquery.split("/");
+				String[] psplit = qsplit[0].split("\\[");
 				
+				String[] nodes = dtdgraph.getChildren(psplit[0]);
+				String nextQuery = "";
+				if(iter.hasNext()){
+					nextQuery = iter.next();
+					if(predicatePattern.matcher(subquery).matches()){
+						newQuery.merge(xpath2sql(nextQuery,dtdgraph));
+						nextQuery = iter.next();
+					}
+				}
+				for(int i=0;i<nodes.length;i++){
+					RelationalQuery r;
+					if(psplit[0]=="#"){
+						r = xpath2sql("/"+nodes[i],dtdgraph);
+					}
+					else{
+						r = xpath2sql(psplit[0]+"/"+nodes[i],dtdgraph);
+					}
+					newQuery.merge(r);
+					if(!nextQuery.isEmpty()){
+						r = xpath2sql(nextQuery.replaceFirst("[*]",nodes[i]),dtdgraph);
+					}
+					newQuery.merge(r);
+				}
 			}
-			else if (subquery=="#"){
+			else if (empty.matches()){
 				System.out.println("Empty element... do nothing");
 			}
 			// Case p1/p2
-			else if (slash.matches() ) {
-				String[] psplit = subquery.split("\\[");
-				String[] qsplit = psplit[0].split("/");
+			else if (slash.matches()) {
+				String queryMinusPredicate = subquery.replaceFirst(predicateRegex,"");
+				String[] qsplit = queryMinusPredicate.split("/");
 				String q1 = qsplit[0];
-				String q2 = qsplit[1];
+				String q2 = qsplit[qsplit.length-1];
 				System.out.println("Case p1/p2: " + q1 + "/" + q2);
 				RelationalQuery r1 = xpath2sql(q1, dtdgraph);
 				RelationalQuery r2 = xpath2sql(q2, dtdgraph);
@@ -171,10 +205,10 @@ public class XPath2SQL {
 			}
 			else if (doubleSlash.matches()){
 				String[] psplit = subquery.split("\\[");
-				String[] qsplit = psplit[0].split("/");
+				String[] qsplit = psplit[0].split("//");
 				String q1 = qsplit[0];
-				String q2 = qsplit[2];
-				System.out.println("Case p1//p2: " + q1 + "/" + q2);
+				String q2 = qsplit[1];
+				System.out.println("Case p1//p2: " + q1 + "//" + q2);
 				String[] paths = dtdgraph.getPath(q1,q2);
 				for(int i=0;i<paths.length;i++){
 					System.out.println("Path from p1 to p2: "+paths[i]);
@@ -182,7 +216,9 @@ public class XPath2SQL {
 					newQuery.merge(r);
 				}
 			}
-			level++;
+			else{
+				System.out.println("Warning: query is not handled");
+			}
 		}
 		return newQuery;
 	}
@@ -205,7 +241,7 @@ public class XPath2SQL {
 	 */
 	public static void main(String[] args) {
 		dtdgraph = new DTDGraph();
-		RelationalQuery query = xpath2sql("/dblp/*/author[/dblp/proceedings/booktitle='toto']", dtdgraph);
+		RelationalQuery query = xpath2sql("/dblp//*[/dblp/proceedings/booktitle='ds']", dtdgraph);
 		query.cleanUp();
 		System.out.println(query);
 	}
