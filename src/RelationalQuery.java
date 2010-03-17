@@ -52,6 +52,7 @@ public class RelationalQuery {
 			str += " WHERE ";
 			Iterator<WhereItem> whereIte = this.where.iterator();
 			while(whereIte.hasNext()){str+=whereIte.next().toString()+" AND ";}
+			str = str.substring(0, str.length()-4);
 		}
 		return str;
 	}

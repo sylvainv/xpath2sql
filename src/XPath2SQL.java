@@ -109,6 +109,12 @@ public class XPath2SQL {
 			Pattern elementPattern = Pattern.compile("[a-z]*");
 			Matcher element = elementPattern.matcher(subquery);
 			
+			Pattern predicatePattern = Pattern.compile("\\[(/[a-z]+)+='[a-z]+'\\]");
+			Matcher predicate = predicatePattern.matcher(subquery);
+					
+			Pattern slashAndPredicatePattern = Pattern.compile("(([a-z]*)|#)/[a-z]*\\[(/[a-z]+)+='[a-z]+'\\]");
+			Matcher slashAndPredicate = slashAndPredicatePattern.matcher(subquery);
+			
 			// Case A
 			if (element.matches() & dtdgraph.isInGraph(subquery)) {
 				System.out.println("Case A: " + subquery);
@@ -130,17 +136,45 @@ public class XPath2SQL {
 				System.out.println("Empty element... do nothing");
 			}
 			// Case p1/p2
-			else if (slash.matches()) {
-				String[] qsplit = subquery.split("/");
+			else if (slash.matches() | slashAndPredicate.matches()) {
+				String[] psplit = subquery.split("\\[");
+				String[] qsplit = psplit[0].split("/");
 				String q1 = qsplit[0];
 				String q2 = qsplit[1];
 				System.out.println("Case p1/p2: " + q1 + "/" + q2);
 				RelationalQuery r1 = xpath2sql(q1, dtdgraph);
 				RelationalQuery r2 = xpath2sql(q2, dtdgraph);
 				newQuery = RelationalQuery.merge(newQuery, RelationalQuery.merge(r1, r2));
-			}	
+			}
+			// Case [q=c]
+			else if (predicate.matches()){
+				System.out.println("Case [q=c]: "+subquery);
+				subquery = subquery.substring(1,subquery.length()-1);
+				String[] split = subquery.split("=");
+				// Get left part of predicate
+				String left = split[split.length-2];
+				// Get right part of predicate
+				String right = split[split.length-1];
+				right = right.substring(1,right.length()-1);
+				RelationalQuery subRelationalQuery = xpath2sql(left, dtdgraph);
+				subRelationalQuery.cleanUp();
+				newQuery.addWhereItem(new WhereItem(subRelationalQuery,"=",right));
+			}
 		}
 		return newQuery;
+	}
+	
+	public static RelationalQuery handlePredicate(String subquery, String operator,RelationalQuery query){
+		System.out.println("Case [q"+operator+"c]: "+subquery);
+		subquery = subquery.substring(1,subquery.length()-1);
+		String[] split = subquery.split(operator);
+		// Get left part of predicate
+		String left = split[split.length-2];
+		// Get right part of predicate
+		String right = split[split.length-1];
+		right = right.substring(1,right.length()-1);
+		query.addWhereItem(new WhereItem(xpath2sql(left, dtdgraph),operator,right));
+		return query;
 	}
 
 	/**
