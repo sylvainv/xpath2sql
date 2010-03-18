@@ -97,7 +97,7 @@ public class DTDGraph {
 				}
 			}
 		}
-		System.out.println("Mapping:"+this.mapping);
+		System.err.println("Mapping:"+this.mapping);
 		// Get all paths from a node A to B (from root to leaves), do that for all nodes
 		paths.put(new Pair<String,String>("proceedings","booktitle"),new String[]{"proceedings/booktitle"});
 		paths.put(new Pair<String,String>("proceedings","title"),new String[]{"proceedings/title"});

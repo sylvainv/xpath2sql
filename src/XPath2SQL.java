@@ -27,7 +27,7 @@ public class XPath2SQL {
 	// year//title
 	private static ArrayList<String> xpathParser(String xpathQuery) {
 		String xpathExpr = xpathQuery;
-		System.out.println("Parsing...:"+xpathQuery);
+		System.err.println("Parsing...:"+xpathQuery);
 		// handle path within predicate, replace '/' by '?' within [] at this
 		// stage
 		int isInPredicate = 0;
@@ -85,7 +85,7 @@ public class XPath2SQL {
 				}
 			}
 		}
-		System.out.println("...Parsed: "+subquery);
+		System.err.println("...Parsed: "+subquery);
 		return subquery;
 	}
 	
@@ -120,7 +120,7 @@ public class XPath2SQL {
 		Iterator<String> iter = subqueries.iterator();
 		while(iter.hasNext()){
 			String subquery = iter.next();
-			System.out.println("Current subquery: "+subquery+";");
+			System.err.println("Current subquery: "+subquery+";");
 			
 			// MATCH PATTERN
 			Matcher slash = slashPattern.matcher(subquery);
@@ -132,9 +132,9 @@ public class XPath2SQL {
 			
 			// Case A
 			if (element.matches() & dtdgraph.isInGraph(subquery)) {
-				System.out.println("Case A: " + subquery);
+				System.err.println("Case A: " + subquery);
 				Vector<String> paths = dtdgraph.mapping(subquery);
-				System.out.println(paths.toString());
+				System.err.println(paths.toString());
 				Iterator<String> pathIte = paths.iterator();
 				while (pathIte.hasNext()) {
 					String[] split = pathIte.next().split("=");
@@ -148,7 +148,7 @@ public class XPath2SQL {
 				}
 			}
 			else if (star.matches()){
-				System.out.println("Case *: A/*");
+				System.err.println("Case *: A/*");
 				String[] qsplit = subquery.split("/");
 				String[] psplit = qsplit[0].split("\\[");
 				
@@ -177,7 +177,7 @@ public class XPath2SQL {
 				}
 			}
 			else if (empty.matches()){
-				System.out.println("Empty element... do nothing");
+				System.err.println("Empty element... do nothing");
 			}
 			// Case p1/p2
 			else if (slash.matches()) {
@@ -185,14 +185,14 @@ public class XPath2SQL {
 				String[] qsplit = queryMinusPredicate.split("/");
 				String q1 = qsplit[0];
 				String q2 = qsplit[qsplit.length-1];
-				System.out.println("Case p1/p2: " + q1 + "/" + q2);
+				System.err.println("Case p1/p2: " + q1 + "/" + q2);
 				RelationalQuery r1 = xpath2sql(q1, dtdgraph);
 				RelationalQuery r2 = xpath2sql(q2, dtdgraph);
 				newQuery.merge(RelationalQuery.merge(r1, r2));
 			}
 			// Case [q=c]
 			else if (predicate.matches()){
-				System.out.println("Case [q=c]: "+subquery);
+				System.err.println("Case [q=c]: "+subquery);
 				subquery = subquery.substring(1,subquery.length()-1);
 				String[] split = subquery.split("=");
 				// Get left part of predicate
@@ -207,19 +207,19 @@ public class XPath2SQL {
 			else if (doubleSlash.matches()){
 				String queryMinusPredicate = subquery.replaceAll(predicateRegex,"");
 				String[] qsplit = queryMinusPredicate.split("//");
-				System.out.println(subquery+"**********"+queryMinusPredicate);
+				System.err.println(subquery+"**********"+queryMinusPredicate);
 				String q1 = qsplit[0];
 				String q2 = qsplit[1];
-				System.out.println("Case p1//p2: " + q1 + "//" + q2);
+				System.err.println("Case p1//p2: " + q1 + "//" + q2);
 				String[] paths = dtdgraph.getPath(q1,q2);
 				for(int i=0;i<paths.length;i++){
-					System.out.println("Path from p1 to p2: "+paths[i]);
+					System.err.println("Path from p1 to p2: "+paths[i]);
 					RelationalQuery r = xpath2sql(paths[i], dtdgraph);
 					newQuery.merge(r);
 				}
 			}
 			else{
-				System.out.println("Warning: query is not handled");
+				System.err.println("Warning: query is not handled");
 			}
 		}
 		return newQuery;
@@ -229,10 +229,27 @@ public class XPath2SQL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		dtdgraph = new DTDGraph();
-		RelationalQuery query = xpath2sql("/*[/dblp/article/journal='toto']//*[/dblp/proceedings/booktitle='ds']", dtdgraph);
-		query.cleanUp();
-		System.out.println(query);
+		
+		if(args.length>2){
+			if(args[2]=="-d"){
+				try{System.setErr(new PrintStream(new File("/dev/null")));}
+				catch(FileNotFoundException e){}
+			}
+		}
+		if (args.length>1){
+			dtdgraph = new DTDGraph();
+			if(args[1].isEmpty() | args[1]=="-d"){
+				System.out.println("Usage is "+args[0]+": [xpath] or [xpath] -d for debug");
+			}
+			else{
+				RelationalQuery query = xpath2sql(args[1], dtdgraph);
+				query.cleanUp();
+				System.out.println(query);
+			}
+		}
+		else{
+			System.out.println("Usage is "+args[0]+": [xpath] or [xpath] -d for debug");
+		}
 	}
 
 }
