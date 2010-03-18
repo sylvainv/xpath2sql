@@ -140,9 +140,15 @@ public class XPath2SQL {
 					String[] split = pathIte.next().split("=");
 					Pattern p = Pattern.compile("table");
 					Matcher m = p.matcher(split[0]);
+					// if it's a table
 					if (m.matches()) {
 						newQuery.addFromItem(new FromItem(split[1]));
-					} else {
+					}
+					// if it's an attribute
+					else {
+						if(split[1]=="journal.id"){
+							newQuery.addFromItem(new FromItem(new JoinItem("journal","publish","journal.id","publish.journal")));
+						}
 						newQuery.addSelectItem(new SelectItem(split[1]));
 					}
 				}

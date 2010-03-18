@@ -1,18 +1,20 @@
 
 public class JoinItem {
 
-	private String label1;
-	private String label2;
-	private String joinOn;
+	private String table1;
+	private String table2;
+	private String joinOn1;
+	private String joinOn2;
 	
-	public JoinItem(String label1, String label2, String joinOn){
-		this.label1 = label1;
-		this.label2 = label2;
-		this.joinOn = joinOn;
+	public JoinItem(String label1, String label2, String joinOn1, String joinOn2){
+		this.table1 = label1;
+		this.table2 = label2;
+		this.joinOn1 = joinOn1;
+		this.joinOn2 = joinOn2;
 	}
 	
 	public String toString(){
-		return this.label1+" JOIN "+this.label2+" ON "+this.label1+"."+this.joinOn+"="+this.label2+"."+this.joinOn;
+		return this.table1+" JOIN "+this.table2+" ON "+this.joinOn1+"="+this.joinOn2;
 	}
 	
 }
