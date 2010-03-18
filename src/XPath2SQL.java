@@ -146,7 +146,7 @@ public class XPath2SQL {
 					}
 					// if it's an attribute
 					else {
-						if(split[1]=="journal.id"){
+						if(split[1]=="publish.journal"){
 							newQuery.addFromItem(new FromItem(new JoinItem("journal","publish","journal.id","publish.journal")));
 						}
 						newQuery.addSelectItem(new SelectItem(split[1]));
