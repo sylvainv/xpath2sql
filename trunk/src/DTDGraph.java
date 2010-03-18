@@ -55,7 +55,7 @@ public class DTDGraph {
 		Vertex articleElement = this.graph.opposite(this.root,this.graph.attachVertexFrom(this.root,"article","table=publish"));
 		this.graph.attachVertexFrom(articleElement,"author","attribute=publish.author");
 		this.graph.attachVertexFrom(articleElement,"title","attribute=publish.title");
-		this.graph.attachVertexFrom(articleElement,"journal","attribute=publish.id");
+		this.graph.attachVertexFrom(articleElement,"journal","attribute=publish.journal");
 		this.graph.attachVertexFrom(articleElement,"year","attribute=publish.year");
 		
 		// Store children of nodes
