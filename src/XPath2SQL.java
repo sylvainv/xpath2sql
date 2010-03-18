@@ -230,16 +230,16 @@ public class XPath2SQL {
 	 */
 	public static void main(String[] args) {
 		
-		if(args.length>2){
+		if(args.length>=2){
 			if(args[2]=="-d"){
 				try{System.setErr(new PrintStream(new File("/dev/null")));}
 				catch(FileNotFoundException e){}
 			}
 		}
-		if (args.length>1){
+		if (args.length>=1){
 			dtdgraph = new DTDGraph();
 			if(args[1].isEmpty() | args[1]=="-d"){
-				System.out.println("Usage is "+args[0]+": [xpath] or [xpath] -d for debug");
+				System.out.println("Usage is: [xpath] or [xpath] -d for debug");
 			}
 			else{
 				RelationalQuery query = xpath2sql(args[1], dtdgraph);
@@ -248,7 +248,7 @@ public class XPath2SQL {
 			}
 		}
 		else{
-			System.out.println("Usage is "+args[0]+": [xpath] or [xpath] -d for debug");
+			System.out.println("Usage is: [xpath] or [xpath] -d for debug");
 		}
 	}
 
