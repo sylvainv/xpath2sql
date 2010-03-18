@@ -146,7 +146,10 @@ public class XPath2SQL {
 					}
 					// if it's an attribute
 					else {
-						if(split[1]=="publish.journal"){
+						Pattern j = Pattern.compile("publish\\.journal");
+						Matcher jm = j.matcher(split[1]);
+						if(jm.matches()){
+							System.err.println("Case journal.id");
 							newQuery.addFromItem(new FromItem(new JoinItem("journal","publish","journal.id","publish.journal")));
 						}
 						newQuery.addSelectItem(new SelectItem(split[1]));
@@ -235,23 +238,13 @@ public class XPath2SQL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		try{System.setErr(new PrintStream(new File("/dev/null")));}
-		catch(FileNotFoundException e){}
+		//try{System.setErr(new PrintStream(new File("/dev/null")));}catch(FileNotFoundException e){}
 
-		if (args.length>=1){
-			dtdgraph = new DTDGraph();
-			if(args[0].isEmpty() | args[0]=="-d"){
-				System.out.println("Usage is: [xpath] or [xpath] -d for debug");
-			}
-			else{
-				RelationalQuery query = xpath2sql(args[0], dtdgraph);
-				query.cleanUp();
-				System.out.println(query);
-			}
-		}
-		else{
-			System.out.println("Usage is: [xpath] or [xpath] -nv for not verbose mode");
-		}
+		dtdgraph = new DTDGraph();
+
+		RelationalQuery query = xpath2sql("/dblp/article/journal", dtdgraph);
+		query.cleanUp();
+		System.out.println(query);
 	}
 
 }
