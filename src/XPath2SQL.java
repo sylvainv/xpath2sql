@@ -67,7 +67,7 @@ public class XPath2SQL {
 					subquery.add(temp);
 					if(element[i + 1].endsWith("]"))
 					{
-						subquery.add(element[i+1]);
+						subquery.add(element[i+1].substring(element[i+1].indexOf("[")));
 					}
 					
 				} else {
@@ -78,7 +78,7 @@ public class XPath2SQL {
 						subquery.add(temp);
 						if(element[i + 2].endsWith("]"))
 						{
-							subquery.add(element[i+2]);
+							subquery.add(element[i+2].substring(element[i+2].indexOf("[")));
 						}
 						i++;
 					}
