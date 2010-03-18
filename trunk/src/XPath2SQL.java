@@ -238,7 +238,7 @@ public class XPath2SQL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//try{System.setErr(new PrintStream(new File("/dev/null")));}catch(FileNotFoundException e){}
+		try{System.setErr(new PrintStream(new File("/dev/null")));}catch(FileNotFoundException e){}
 
 		dtdgraph = new DTDGraph();
 
