@@ -229,26 +229,22 @@ public class XPath2SQL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		if(args.length>=2){
-			if(args[2]=="-d"){
-				try{System.setErr(new PrintStream(new File("/dev/null")));}
-				catch(FileNotFoundException e){}
-			}
-		}
+		try{System.setErr(new PrintStream(new File("/dev/null")));}
+		catch(FileNotFoundException e){}
+
 		if (args.length>=1){
 			dtdgraph = new DTDGraph();
-			if(args[1].isEmpty() | args[1]=="-d"){
+			if(args[0].isEmpty() | args[0]=="-d"){
 				System.out.println("Usage is: [xpath] or [xpath] -d for debug");
 			}
 			else{
-				RelationalQuery query = xpath2sql(args[1], dtdgraph);
+				RelationalQuery query = xpath2sql(args[0], dtdgraph);
 				query.cleanUp();
 				System.out.println(query);
 			}
 		}
 		else{
-			System.out.println("Usage is: [xpath] or [xpath] -d for debug");
+			System.out.println("Usage is: [xpath] or [xpath] -nv for not verbose mode");
 		}
 	}
 
