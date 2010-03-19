@@ -159,10 +159,12 @@ public class XPath2SQL {
 			// Case *
 			else if (star.matches()){
 				System.err.println("Case *: A/*");
-				String[] qsplit = subquery.split("/");
-				String[] psplit = qsplit[0].split("\\[");
-				
-				String[] nodes = dtdgraph.getChildren(psplit[0]);
+				String queryMinusPredicate = subquery.replaceAll(predicateRegex,"");
+				String[] qsplit = queryMinusPredicate.split("/");
+				Pattern s = Pattern.compile("[*]");
+				Matcher sm = s.matcher(qsplit[0]);
+				if(sm.matches()){qsplit[0]="dblp";}
+				String[] nodes = dtdgraph.getChildren(qsplit[0]);
 				String nextQuery = "";
 				if(iter.hasNext()){
 					nextQuery = iter.next();
@@ -173,11 +175,11 @@ public class XPath2SQL {
 				}
 				for(int i=0;i<nodes.length;i++){
 					RelationalQuery r;
-					if(psplit[0]=="#"){
+					if(qsplit[0]=="#"){
 						r = xpath2sql("/"+nodes[i],dtdgraph);
 					}
 					else{
-						r = xpath2sql(psplit[0]+"/"+nodes[i],dtdgraph);
+						r = xpath2sql(qsplit[0]+"/"+nodes[i],dtdgraph);
 					}
 					newQuery.merge(r);
 					if(!nextQuery.isEmpty()){
@@ -240,12 +242,12 @@ public class XPath2SQL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//try{System.setErr(new PrintStream(new File("/dev/null")));}catch(FileNotFoundException e){}
+//		try{System.setErr(new PrintStream(new File("/dev/null")));}catch(FileNotFoundException e){}
 
 		dtdgraph = new DTDGraph();
 
 		//RelationalQuery query = xpath2sql(args[0], dtdgraph);
-		RelationalQuery query = xpath2sql("/*/*", dtdgraph);
+		RelationalQuery query = xpath2sql("/*/*/*", dtdgraph);
 		query.cleanUp();
 		System.out.println(query);
 	}
