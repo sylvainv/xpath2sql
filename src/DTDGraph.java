@@ -59,6 +59,7 @@ public class DTDGraph {
 		this.graph.attachVertexFrom(articleElement,"year","attribute=publish.year");
 		
 		// Store children of nodes
+		this.children.put("*",new String[]{"dblp"});
 		this.children.put("#",new String[]{"dblp"});
 		this.children.put("dblp",new String[]{"proceedings","inproceedings","article"});
 		this.children.put("proceedings",new String[]{"booktitle","title"});
