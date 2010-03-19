@@ -156,6 +156,7 @@ public class XPath2SQL {
 					}
 				}
 			}
+			// Case *
 			else if (star.matches()){
 				System.err.println("Case *: A/*");
 				String[] qsplit = subquery.split("/");
@@ -213,6 +214,7 @@ public class XPath2SQL {
 				subRelationalQuery.cleanUp();
 				newQuery.addWhereItem(new WhereItem(subRelationalQuery,right));
 			}
+			// Case p1//p2
 			else if (doubleSlash.matches()){
 				String queryMinusPredicate = subquery.replaceAll(predicateRegex,"");
 				String[] qsplit = queryMinusPredicate.split("//");
@@ -238,11 +240,12 @@ public class XPath2SQL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		try{System.setErr(new PrintStream(new File("/dev/null")));}catch(FileNotFoundException e){}
+		//try{System.setErr(new PrintStream(new File("/dev/null")));}catch(FileNotFoundException e){}
 
 		dtdgraph = new DTDGraph();
 
-		RelationalQuery query = xpath2sql("/dblp/article/journal", dtdgraph);
+		//RelationalQuery query = xpath2sql(args[0], dtdgraph);
+		RelationalQuery query = xpath2sql("/*/*", dtdgraph);
 		query.cleanUp();
 		System.out.println(query);
 	}
